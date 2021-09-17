@@ -9,6 +9,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 
@@ -25,6 +26,11 @@ void main() {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        log('No login user found. Login via anonymously.');
+        await FirebaseAuth.instance.signInAnonymously();
+      }
       runApp(const App());
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
