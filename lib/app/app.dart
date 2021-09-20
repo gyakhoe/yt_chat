@@ -5,8 +5,11 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:yt_chat/authentication/authentication.dart';
 
 import 'package:yt_chat/home/home.dart';
 import 'package:yt_chat/l10n/l10n.dart';
@@ -28,7 +31,16 @@ class App extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const HomePage(),
+      home: BlocProvider(
+        create: (context) => AuthenticationBloc(
+          authenticationRepository: AuthenticationRepository(
+            authenticationFirebaseProvider: AuthenticationFirebaseProvider(
+              firebaseAuth: FirebaseAuth.instance,
+            ),
+          ),
+        ),
+        child: const HomePage(),
+      ),
     );
   }
 }
