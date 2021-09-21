@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yt_chat/account/views/account_view.dart';
 import 'package:yt_chat/authentication/authentication.dart';
-import 'package:yt_chat/home/home.dart';
 import 'package:yt_chat/login/login.dart';
 
 class HomePage extends StatelessWidget {
@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
             } else if (state is AuthenticationFailure) {
               return const LoginView();
             } else if (state is AuthenticationSuccessful) {
-              return HomeView();
+              return const AccountView();
             } else if (state is AuthenticationInprogress) {
               return const CircularProgressIndicator();
             } else {
