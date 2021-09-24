@@ -1,5 +1,6 @@
 class FirebaseKeys {
-  static const String appCollections = 'yt_chat';
-  static const String usersCollection = 'users';
-  static const String usernameField = 'username';
+  static const String ytChat = 'ytChat';
+  static const String users = 'users';
+  static const String username = 'username';
+  static const String registeredUser = 'registeredUsers';
 }
