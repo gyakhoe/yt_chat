@@ -10,19 +10,6 @@ class AccountFirebaseProvider {
     required this.firestore,
   });
 
-  Future<bool> isRegistered({required String uid}) async {
-    final userCollectionQuerySnap = await firestore
-        .collection(FirebaseKeys.ytChat)
-        .doc(FirebaseKeys.users)
-        .collection(FirebaseKeys.registeredUser)
-        .get();
-    final documents = userCollectionQuerySnap.docs;
-    for (final element in documents) {
-      return element.id == uid;
-    }
-    return false;
-  }
-
   Future<void> addUser({
     required String uid,
     required Map<String, String> userDetailMap,
@@ -46,5 +33,16 @@ class AccountFirebaseProvider {
       log(element.id);
     }
     return usernameQuerySnap.docs.isEmpty;
+  }
+
+  Future<Map<String, dynamic>?> getUserDetail({required String uid}) async {
+    final userDocSnap = await firestore
+        .collection(FirebaseKeys.ytChat)
+        .doc(FirebaseKeys.users)
+        .collection(FirebaseKeys.registeredUser)
+        .doc(uid)
+        .get();
+
+    return userDocSnap.data();
   }
 }

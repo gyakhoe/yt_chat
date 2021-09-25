@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yt_chat/home/bloc/home_bloc.dart';
+import 'package:yt_chat/settings/settings_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -8,14 +11,30 @@ class HomeView extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-            flex: 9,
-            child: Container(
-              color: Colors.pink,
-            )),
+          flex: 9,
+          child: BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) {
+              if (state is HomeUserDisplay) {
+                return const Text('user will be displayed here');
+              } else if (state is HomeChatDisplay) {
+                return const Text('Cht will be displayed here');
+              } else if (state is HomeSettingsDisplay) {
+                return const SettingsView();
+              }
+              return Text('Undfined state ${state.runtimeType}');
+            },
+          ),
+        ),
         const Expanded(child: _HomeNavBar()),
       ],
     );
   }
+}
+
+enum HomeNavItem {
+  user,
+  chat,
+  settings,
 }
 
 class _HomeNavBar extends StatefulWidget {
@@ -28,12 +47,19 @@ class _HomeNavBar extends StatefulWidget {
 }
 
 class _HomeNavBarState extends State<_HomeNavBar> {
-  int currentIndex = 0;
+  int currentIndex = HomeNavItem.user.index;
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: (tappedIndex) {
+        if (tappedIndex == HomeNavItem.user.index) {
+          BlocProvider.of<HomeBloc>(context).add(HomeUserPressed());
+        } else if (tappedIndex == HomeNavItem.chat.index) {
+          BlocProvider.of<HomeBloc>(context).add(HomeChatPressed());
+        } else if (tappedIndex == HomeNavItem.settings.index) {
+          BlocProvider.of<HomeBloc>(context).add(HomeSettingsPressed());
+        }
         setState(() {
           currentIndex = tappedIndex;
         });

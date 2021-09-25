@@ -31,9 +31,10 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       AccountVerified event) async* {
     try {
       yield AccountVerificationInprogress();
-      final isRegistered = await accountRepository.isRegistered(uid: event.uid);
-      yield isRegistered
-          ? AccountVerificationSuccess(uid: event.uid)
+
+      final user = await accountRepository.getUserDetail(uid: event.uid);
+      yield user.username.isNotEmpty
+          ? AccountVerificationSuccess(userDetail: user)
           : const AccountVerificationFailure(
               message: 'user not yet registered');
     } catch (e) {
@@ -47,13 +48,21 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       AccountRegistered event) async* {
     try {
       yield AccountRegistrationInprogress();
-      if (event.userDetail.username.isEmpty) {
+      final username = event.userDetail.username.trim();
+      if (username.isEmpty) {
         yield const AccountRegistrationFailure(
           message: 'Username is empty',
         );
       } else {
-        await accountRepository.addUser(userDetail: event.userDetail);
-        yield AccountRegistrationSuccess(uid: event.userDetail.uid);
+        final isUsernameAvilable =
+            await accountRepository.isUsernameAvailable(username: username);
+        if (!isUsernameAvilable) {
+          yield const AccountRegistrationFailure(
+              message: 'Username is taken. Try another');
+        } else {
+          await accountRepository.addUser(userDetail: event.userDetail);
+          yield AccountRegistrationSuccess(userDetail: event.userDetail);
+        }
       }
     } catch (e) {
       log('Unable to register user');
