@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yt_chat/contact/bloc/contact_bloc.dart';
+import 'package:yt_chat/contact/data/providers/contact_firebase_provider.dart';
+import 'package:yt_chat/contact/data/repositories/contact_repository.dart';
+import 'package:yt_chat/contact/views/contact_view.dart';
 import 'package:yt_chat/home/bloc/home_bloc.dart';
 import 'package:yt_chat/settings/settings_view.dart';
 
@@ -15,7 +20,14 @@ class HomeView extends StatelessWidget {
           child: BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               if (state is HomeUserDisplay) {
-                return const Text('user will be displayed here');
+                return BlocProvider(
+                  create: (context) => ContactBloc(ContactRepository(
+                    contactFirebaseProvider: ContactFirebaseProvider(
+                        firestore: FirebaseFirestore.instance),
+                  ))
+                    ..add(ContactStreamRequested()),
+                  child: const ContactView(),
+                );
               } else if (state is HomeChatDisplay) {
                 return const Text('Cht will be displayed here');
               } else if (state is HomeSettingsDisplay) {
