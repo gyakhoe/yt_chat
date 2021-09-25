@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yt_chat/account/bloc/account_bloc.dart';
 import 'package:yt_chat/account/views/account_registration_view.dart';
+import 'package:yt_chat/home/bloc/home_bloc.dart';
 import 'package:yt_chat/home/home.dart';
 
 class AccountView extends StatelessWidget {
@@ -14,6 +15,7 @@ class AccountView extends StatelessWidget {
         child: BlocConsumer<AccountBloc, AccountState>(
       listener: (context, state) {
         if (state is AccountRegistrationFailure) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -28,12 +30,17 @@ class AccountView extends StatelessWidget {
           BlocProvider.of<AccountBloc>(context).add(AccountVerified(
               uid: FirebaseAuth.instance.currentUser?.uid.toString() ?? ''));
           return const CircularProgressIndicator();
+        } else if (state is AccountRegistrationInprogress) {
+          return const CircularProgressIndicator();
         } else if (state is AccountVerificationFailure ||
             state is AccountRegistrationFailure) {
           return AccountRegistrationView();
         } else if (state is AccountVerificationSuccess ||
             state is AccountRegistrationSuccess) {
-          return const HomeView();
+          return BlocProvider(
+            create: (context) => HomeBloc(),
+            child: const HomeView(),
+          );
         } else if (state is AccountVerificationInprogress) {
           return const CircularProgressIndicator();
         }

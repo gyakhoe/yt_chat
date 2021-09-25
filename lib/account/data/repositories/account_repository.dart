@@ -1,5 +1,6 @@
 import 'package:yt_chat/account/account.dart';
 import 'package:yt_chat/account/data/models/user.dart';
+import 'package:yt_chat/utilities/firebase_keys.dart';
 
 class AccountRepository {
   final AccountFirebaseProvider accountFirebaseProvider;
@@ -18,16 +19,20 @@ class AccountRepository {
   }
 
   Future<bool> isUsernameAvailable({
-    required UserDetail userDetail,
+    required String username,
   }) async {
     final isAvailable =
-        await accountFirebaseProvider.isRegistered(uid: userDetail.uid);
+        await accountFirebaseProvider.isUserNameAvailable(username: username);
     return isAvailable;
   }
 
-  Future<bool> isRegistered({
-    required String uid,
-  }) async {
-    return accountFirebaseProvider.isRegistered(uid: uid);
+  Future<UserDetail> getUserDetail({required String uid}) async {
+    final userDetailMap = await accountFirebaseProvider.getUserDetail(uid: uid);
+
+    return UserDetail(
+        uid: uid,
+        username: userDetailMap != null
+            ? userDetailMap[FirebaseKeys.username].toString()
+            : '');
   }
 }

@@ -33,6 +33,7 @@ class AccountRegistrationView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
                   controller: usernameController,
+                  autocorrect: false,
                   decoration: const InputDecoration(
                     hintText: 'Create username here',
                     border: OutlineInputBorder(

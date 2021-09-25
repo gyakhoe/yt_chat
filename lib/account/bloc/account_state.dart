@@ -21,12 +21,12 @@ class AccountVerificationFailure extends AccountState {
 }
 
 class AccountVerificationSuccess extends AccountState {
-  final String uid;
+  final UserDetail userDetail;
   const AccountVerificationSuccess({
-    required this.uid,
+    required this.userDetail,
   });
   @override
-  List<Object> get props => [uid];
+  List<Object> get props => [userDetail];
 }
 
 class AccountRegistrationInprogress extends AccountState {}
@@ -41,10 +41,10 @@ class AccountRegistrationFailure extends AccountState {
 }
 
 class AccountRegistrationSuccess extends AccountState {
-  final String uid;
+  final UserDetail userDetail;
   const AccountRegistrationSuccess({
-    required this.uid,
+    required this.userDetail,
   });
   @override
-  List<Object> get props => [uid];
+  List<Object> get props => [userDetail];
 }
