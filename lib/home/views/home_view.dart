@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:yt_chat/account/data/models/user.dart';
 import 'package:yt_chat/contact/bloc/contact_bloc.dart';
 import 'package:yt_chat/contact/data/providers/contact_firebase_provider.dart';
 import 'package:yt_chat/contact/data/repositories/contact_repository.dart';
@@ -9,7 +11,11 @@ import 'package:yt_chat/home/bloc/home_bloc.dart';
 import 'package:yt_chat/settings/settings_view.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({Key? key}) : super(key: key);
+  final UserDetail loginUser;
+  const HomeView({
+    Key? key,
+    required this.loginUser,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +32,12 @@ class HomeView extends StatelessWidget {
                         firestore: FirebaseFirestore.instance),
                   ))
                     ..add(ContactStreamRequested()),
-                  child: const ContactView(),
+                  child: ContactView(
+                    loginUser: loginUser,
+                  ),
                 );
               } else if (state is HomeChatDisplay) {
-                return const Text('Cht will be displayed here');
+                return const Text('Chat will be displayed here');
               } else if (state is HomeSettingsDisplay) {
                 return const SettingsView();
               }
