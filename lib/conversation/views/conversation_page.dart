@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:yt_chat/account/data/models/user.dart';
 import 'package:yt_chat/conversation/bloc/conversation_bloc.dart';
+import 'package:yt_chat/conversation/views/conversation_view.dart';
 
 class ConversationPage extends StatelessWidget {
   final UserDetail reciever;
@@ -29,21 +30,13 @@ class ConversationPage extends StatelessWidget {
                         senderUid: loginUser.uid, receiverUid: reciever.uid));
                 return const CircularProgressIndicator();
               } else if (state is ConversationOpenSuccessful) {
-                return Text(state.conversationId);
-              } else if (state is ConversationUnavilable) {
-                return SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: Column(
-                    children: const [
-                      Icon(
-                        Icons.move_to_inbox,
-                        size: 50,
-                      ),
-                      Text('Say hi first'),
-                    ],
-                  ),
+                return ConversationView(
+                  covnersationId: state.conversationId,
                 );
+              } else if (state is ConversationUnavilable) {
+                return const ConversationView();
+              } else if (state is ConversationOpenInprogress) {
+                return const CircularProgressIndicator();
               }
               return Text(state.runtimeType.toString());
             },
